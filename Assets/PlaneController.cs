@@ -63,13 +63,14 @@ public class PlaneController : MonoBehaviour
 
     private void LoadCars()
     {
-        FileSave fileSave = FileSave.DeserializeFromXmlFile(@"D:\bestNeuronCars.txt");
+        FileSave fileSave = FileSave.DeserializeFromXmlFile(@"bestNeuronCars.txt");
         carList = fileSave.NetworkParamsList.Select(x =>
         {
             GameObject car = Instantiate(defaultCar, spawnPosition, new Quaternion(0f, 0f, 0f, 0f)) as GameObject;
             car.GetComponent<CarBot>().InitNeural(x);
             return car;
         }).ToList();
+        Generation = fileSave.Generations;
         AllCarsActive(true);
     }
 
@@ -93,7 +94,7 @@ public class PlaneController : MonoBehaviour
         }
         List<NetworkParams> neurals = carList.Select(x => x.GetComponent<CarBot>()).OrderByDescending(x => x.Fitnes).Take(bestCarCount).Select(x => x.neural.Serialize()).ToList();
         FileSave fileSave = new FileSave(neurals, Generation);
-        fileSave.SaveToFile(@"D:\bestNeuronCars.txt");
+        fileSave.SaveToFile(@"bestNeuronCars.txt");
     }
     #endregion
 
@@ -155,7 +156,7 @@ public class PlaneController : MonoBehaviour
     {
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"Generation: {Generation}");
-        sb.AppendLine($"Elapsed time: {stopwatch.Elapsed} s.");
+        sb.AppendLine($"Elapsed time: {stopwatch.Elapsed.TotalSeconds} s.");
         sb.AppendLine($"Cars total/active: {carList.Count} / {carList.Select(x => x.GetComponent<CarBot>()).Where(x => x.Running).Count()}");
         
         statusText.text = sb.ToString();
