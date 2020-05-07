@@ -157,6 +157,7 @@ public class PlaneController : MonoBehaviour
         sb.AppendLine($"Generation: {Generation}");
         sb.AppendLine($"Elapsed time: {stopwatch.Elapsed} s.");
         sb.AppendLine($"Cars total/active: {carList.Count} / {carList.Select(x => x.GetComponent<CarBot>()).Where(x => x.Running).Count()}");
+        
         statusText.text = sb.ToString();
     }
 
@@ -181,7 +182,7 @@ public class PlaneController : MonoBehaviour
             {
                 if ((carList.Select(x => x.GetComponent<CarBot>()).Count(x => x.Running) == 0) && stopwatch.Elapsed.Seconds>5)
                     NextGeneration();
-                if ((stopwatch.Elapsed.Seconds >= SecondsForGeneration))
+                if ((stopwatch.Elapsed.TotalSeconds >= SecondsForGeneration))
                     NextGeneration();
             }
         }
